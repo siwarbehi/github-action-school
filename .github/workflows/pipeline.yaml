@@ -1,0 +1,39 @@
+name: pipeline
+on:
+  workflow_dispatch:
+jobs:
+  test_and_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+      
+      - name: Configurer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Exécuter le Linter
+        run: npm run lint
+
+      - name: Exécuter les Tests
+        run: npm test*
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: test_and_lint
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Connexion à DockerHub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Construire l'image Docker
+        run: docker build -t <nom-de-l'image> .
+
+      - name: Pousser l'image Docker sur Docker Hub
+        run: docker push <nom-de-l'image>
+
