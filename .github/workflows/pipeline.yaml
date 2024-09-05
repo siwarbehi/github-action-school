@@ -1,13 +1,13 @@
 name: pipeline
+
 on:
   workflow_dispatch:
-   inputs:
-    skip_push:
-    type: boolean
-    description: 'Skip pushing to Docker'
-    requiered: false
-    default : false
-
+    inputs:
+      skip_push:
+        type: boolean
+        description: 'Skip pushing to Docker'
+        required: false
+        default: false
 jobs:
   lint-and-test:
     name: Linting and testing
