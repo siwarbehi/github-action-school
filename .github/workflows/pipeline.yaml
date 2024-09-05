@@ -1,6 +1,12 @@
 name: pipeline
 on:
   workflow_dispatch:
+   inputs:
+    skip_push:
+    type: boolean
+    description: 'Skip pushing to Docker'
+    requiered: false
+    default : false
 
 jobs:
   lint-and-test:
@@ -44,4 +50,7 @@ jobs:
       - name: Build docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/github-action-school .
       - name: Push to Dockerhub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/github-action-school
+      - name: push to Docker image
+        if: ${{ !inputs.skip_push }}
         run: docker push ${{ secrets.DOCKER_USERNAME }}/github-action-school
